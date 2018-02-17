@@ -28,14 +28,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Portfolio Management</a><br>
+                <a class="navbar-brand" href="#">Portfolio Management</a>
+                <br>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                       
+
                     </li>
                     <li>
                     </li>
@@ -48,11 +49,28 @@
         <!-- /.container-fluid -->
     </nav>
 
-
+    <div class="container">
+        <div class="row">
+           <b> Equity: </b>&nbsp;<input type="text" name="" id="equityList" style="height: 25px;">&nbsp;
+           <b> Quantity: </b>&nbsp;<input id="numeric" type="number" title="numeric" min="0" max="100" step="1" />&nbsp;
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="addEquity" class="k-button">Add to portfolio</button>
+        </div>
+    </div>
 </body>
 <script>
     $(document).ready(function () {
-        
+        $.get("https://itzdemocode.github.io/dummyData/equityList.json", function (responsedata) {
+            // alert("Load was performed.");
+            console.log(responsedata.data);
+            $('#equityList').kendoAutoComplete({
+                dataSource: responsedata.data,
+                dataTextField: "company"
+            });
+        });
+        $("#numeric").kendoNumericTextBox();
+        $('#addEquity').click(function (ev) {
+            alert('!!!');
+        });
     });
 </script>
 

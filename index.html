@@ -51,22 +51,76 @@
 
     <div class="container">
         <div class="row">
-           <b> Equity: </b>&nbsp;<input type="text" name="" id="equityList" style="height: 25px;">&nbsp;
-           <b> Quantity: </b>&nbsp;<input id="numeric" type="number" title="numeric" min="0" max="100" step="1" />&nbsp;
-           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="addEquity" class="k-button">Add to portfolio</button>
+            <b> Equity: </b>&nbsp;
+            <input type="text" name="" id="equityList" style="height: 25px;">&nbsp;
+            <b> Quantity: </b>&nbsp;
+            <input id="numeric" type="number" title="numeric" min="0" max="100" step="1" />&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button id="addEquity" class="k-button">Add to portfolio</button>
         </div>
+        <br>
+        <div id="grid"></div>
     </div>
 </body>
 <script>
     $(document).ready(function () {
+        
+        var gridData = null;
+        var selectedItem = null;
+
         $.get("https://itzdemocode.github.io/dummyData/equityList.json", function (responsedata) {
             // alert("Load was performed.");
-            console.log(responsedata.data);
+            // console.log(responsedata.data);
             $('#equityList').kendoAutoComplete({
                 dataSource: responsedata.data,
-                dataTextField: "company"
+                dataTextField: "company",
+                dataValueField: 'index',
+                select: function (e) {
+                    selectedItem = e.dataItem;
+                }
             });
         });
+
+        var gridDataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "https://itzdemocode.github.io/dummyData/myEquityList.json"
+                }
+            }
+        });
+
+        $.get("https://itzdemocode.github.io/dummyData/myEquityList.json", function (responsedata) {
+            gridData = responsedata.data;
+            $("#grid").kendoGrid({
+                dataSource: {
+                    data: gridData,
+                    schema: {
+                        model: {
+                            fields: {
+                                company: {
+                                    type: "string"
+                                },
+                                quantity: {
+                                    type: "number"
+                                }
+                            }
+                        }
+                    }
+                },
+
+                columns: [{
+                        field: "company",
+                        title: "Company",
+                        width: "130px"
+                    },
+                    {
+                        field: "quantity",
+                        title: "Quantity",
+                        width: "130px"
+                    }
+                ]
+            });
+        });
+
         $("#numeric").kendoNumericTextBox();
         $('#addEquity').click(function (ev) {
             alert('!!!');

@@ -54,7 +54,7 @@
             <b> Equity: </b>&nbsp;
             <input type="text" name="" id="equityList" style="height: 25px;">&nbsp;
             <b> Quantity: </b>&nbsp;
-            <input id="numeric" type="number" title="numeric" min="0" max="100" step="1" />&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input id="numeric" type="number" title="numeric" value="1" min="1" max="100" step="1" />&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button id="addEquity" class="k-button">Add to portfolio</button>
         </div>
         <br>
@@ -63,7 +63,7 @@
 </body>
 <script>
     $(document).ready(function () {
-        
+
         var gridData = null;
         var selectedItem = null;
 
@@ -76,6 +76,7 @@
                 dataValueField: 'index',
                 select: function (e) {
                     selectedItem = e.dataItem;
+                    selectedItem["quantity"] = $('#numeric').val();
                 }
             });
         });
@@ -106,24 +107,43 @@
                         }
                     }
                 },
-
+                filterable: {
+                    mode: "row"
+                },
                 columns: [{
                         field: "company",
-                        title: "Company",
-                        width: "130px"
+                        title: "Company"
                     },
                     {
                         field: "quantity",
-                        title: "Quantity",
-                        width: "130px"
-                    }
+                        title: "Quantity"
+                    },
+                    {
+                        command: [{
+                            text: "Del",
+                            click: deleteItem
+                        }],
+                        title: "&nbsp;",
+                        width: "100px;"
+                    },
                 ]
             });
         });
 
+        function deleteItem(e) {
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            var grid = $("#grid").data("kendoGrid");
+            grid.dataSource.remove(dataItem);
+            grid.refresh();
+        }
+
         $("#numeric").kendoNumericTextBox();
         $('#addEquity').click(function (ev) {
-            alert('!!!');
+            selectedItem["quantity"] = $('#numeric').val();
+            console.log(selectedItem);
+            gridData.push(selectedItem);
+            var gridWidget = $('#grid').data("kendoGrid");
+            gridWidget.dataSource.data(gridData);
         });
     });
 </script>
